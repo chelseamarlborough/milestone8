@@ -230,6 +230,58 @@ print(short)
 
 #compare rap v nonrap
 
+pie <- as.data.frame(table(music$type))
 
+pie %>% 
+  ggplot(aes(x = "", y = Freq, fill = Var1)) +
+  geom_bar(stat = "identity") +
+  coord_polar("y", start = 0) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank())
 
+#boxplots of each category
 
+#danceability
+
+chart1 <- music %>% 
+  ggplot(aes(type, danceability, fill = type)) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Danceability") +
+  theme(legend.position = "none")
+
+print(chart1)
+
+#energy
+
+chart2 <- music %>% 
+  ggplot(aes(type, energy, fill = type)) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Energy") +
+  theme(legend.position = "none")
+
+print(chart2)
+
+#loud
+
+chart3 <- ggplot(music, aes(type, loudness, fill = type)) +
+  geom_boxplot(outlier.size = 1,
+               outlier.shape = 20) +
+  theme_economist()
+
+print(chart3)
+
+#speech
+
+chart4 <- music %>% 
+  ggplot(aes(type, speechiness, fill = type)) +
+  geom_boxplot() +
+  labs(x = "",
+       y = "Speechiness") +
+  theme(legend.position = "none")
+
+print(chart4)

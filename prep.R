@@ -90,6 +90,7 @@ top25 <- music %>%
   slice(1:25) %>%
   ggplot(., aes(reorder(artists,+freq), freq)) +
   geom_bar(stat = "identity") +
+  scale_fill_manual(values = "Greens") +
   coord_flip() +
   labs(x = "Artist",
        y = "Number of Songs in Top 100",

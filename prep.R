@@ -139,6 +139,17 @@ loud <- music %>%
 
 print(loud)
 
+soft <- music %>% 
+  arrange(loudness) %>% 
+  slice(1:10) %>% 
+  ggplot(aes(reorder(artist_name, +loudness), loudness)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "Song",
+       y = "Value",
+       title = "Top 10 Softest Songs")
+
+print(soft)
 
 #speechiness
 
@@ -291,6 +302,7 @@ pie %>%
   ggplot(aes(x = "", y = Freq, fill = Var1)) +
   geom_bar(stat = "identity") +
   coord_polar("y", start = 0) +
+  scale_fill_brewer(palette = "Greens") +
   theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
@@ -305,6 +317,7 @@ pie %>%
 chart1 <- music %>%
   ggplot(aes(type, danceability, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Danceability") +
   theme(legend.position = "none")
@@ -316,6 +329,7 @@ print(chart1)
 chart2 <- music %>%
   ggplot(aes(type, energy, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Energy") +
   theme(legend.position = "none")
@@ -327,6 +341,7 @@ print(chart2)
 chart3 <- music %>%
   ggplot(aes(type, loudness, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Loudness") +
   theme(legend.position = "none")
@@ -338,6 +353,7 @@ print(chart3)
 chart4 <- music %>%
   ggplot(aes(type, speechiness, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Speechiness") +
   theme(legend.position = "none")
@@ -349,6 +365,7 @@ print(chart4)
 chart5 <- music %>%
   ggplot(aes(type, acousticness, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Acousticness") +
   theme(legend.position = "none")
@@ -360,6 +377,7 @@ print(chart5)
 chart6 <- music %>%
   ggplot(aes(type, liveness, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Liveliness") +
   theme(legend.position = "none")
@@ -371,6 +389,7 @@ print(chart6)
 chart7 <- music %>%
   ggplot(aes(type, valence, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Valence") +
   theme(legend.position = "none")
@@ -382,6 +401,7 @@ print(chart7)
 chart8 <- music %>%
   ggplot(aes(type, tempo, fill = type)) +
   geom_boxplot() +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Tempo") +
   theme(legend.position = "none")
@@ -405,6 +425,7 @@ grid.arrange(chart1,
 music %>%
   ggplot(aes((duration_ms / 1000) / 60, fill = type)) +
   geom_density(alpha = 0.5) +
+  scale_fill_brewer(palette = "Greens") +
   labs(x = "Length (minutes)",
        y = "") +
   scale_x_continuous(limits = c(0, 8), breaks = seq(0, 8, 1)) +
@@ -416,11 +437,12 @@ corrplot(
   cor(music[c(3, 4, 6, 8, 9, 10, 11, 12, 13, 14)]),
   method = "color",
   type = "upper",
+  col = brewer.pal(n = 10, name = "Greens"),
   tl.col = "black",
   tl.srt = 90,
   addCoef.col = "gray8",
   diag = T,
   number.cex = 0.65,
   order = "alphabet"
-)
+) 
 

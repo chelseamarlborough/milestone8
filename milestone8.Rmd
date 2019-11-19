@@ -77,7 +77,7 @@ congratulations <- genius_lyrics("post malone", "congratulations")
 
 plug_walk <- genius_lyrics("rich the kid", "plug walk")
 
-sir_fry <- genius_lyrics("migos", "stir fry")
+stir_fry <- genius_lyrics("migos", "stir fry")
 
 humble <- genius_lyrics("kendrick lamar", "humble.")
 
@@ -216,4 +216,15 @@ no_brainer <- genius_lyrics("dj khaled", "no brainer")
 dusk_till_dawn <- genius_lyrics("zayn", "dusk till dawn")
 
 be_alright <- genius_lyrics("dean lewis", "be alright")
+
 ```
+
+
+```{r combine into one dataframe}
+
+lyrics <- c(gods_plan, sad, rockstar, psycho, in_my_feelings, better_now, i_like_it, lucid_dreams, nice_for_what, all_the_stars, moonlight, look_alive, te_bote, jocelyn_flores, taste, i_fall_apart, changes, river, sicko_mode, ric_flair_drip, freaky_friday, fefe, xo_tour_Llif3, nonstop, fuck_love, walk_it_talk_it, him_n_i, candy_paint, congratulations, plug_walk, stir_fry, humble, vaina_loca, siguelo_bailando, yes_indeed, everybody_dies_in_their_nightmares, one_kiss, idgaf, friends, havana, girls_like_you, the_middle, no_tears_left_to_cry, x, these_days, mine, youngblood, new_rules, shape_of_you, love_lies, meant_to_be, perfect, solo, nevermind, echame_la_culpa, eastside, never_be_the_same, wolves, in_my_mind, dura, thunder, me_niego, jackie_chan, finesse, back_to_you, let_you_down, call_out_my_name, happier, too_good_at_goodbyes, believer, rise, body, sin_pijama, two_thousand_two, in_my_blood, silence, god_is_a_woman, dejala_que_vuelva, flames, what_lovers_do, taki_taki, let_me_go, feel_it_still, pray_for_me, one_two_three, criminal, lovely, perfect_duet, corazon, young_dumb_n_broke, downtown, bella, promises, i_like_me_better, this_is_me, rewrite_the_stars, i_miss_you, no_brainer, dusk_till_dawn, be_alright)
+
+lyrics
+
+```
+

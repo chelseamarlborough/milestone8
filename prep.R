@@ -81,6 +81,8 @@ non_rap$type <- "Non Rap"
 
 music <- rbind(rap, non_rap)
 
+write_rds(music, path = "milestone8/music.rds")
+
 #25 most popular artists
 
 top25 <- music %>%
@@ -151,6 +153,8 @@ soft <- music %>%
        title = "Top 10 Softest Songs")
 
 print(soft)
+
+loudness <- grid.arrange(loud, soft)
 
 #speechiness
 
@@ -298,6 +302,8 @@ print(short)
 #compare rap v nonrap
 
 pie <- as.data.frame(table(music$type))
+
+write_rds(pie, path = "milestone8/pie.rds")
 
 pie %>%
   ggplot(aes(x = "", y = Freq, fill = Var1)) +
@@ -447,3 +453,15 @@ corrplot(
   order = "alphabet"
 ) 
 
+
+#regression
+music %>% 
+  ggplot(aes(loudness, energy))+
+  geom_point(colour = "black", shape = 21, size = 3, aes(fill = factor(type)))+ 
+  scale_fill_brewer(palette = "Greens")+
+  geom_smooth(method = lm)+
+  annotate("text", x = -9.3, y = 0.85, label = "italic(r) == 0.73", parse = T, size = 6, col = "gray20")+
+  labs(x = "Loudness", y = "Energy")+
+  theme_economist()+
+  theme(axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.position = "right")+
+  guides(fill = guide_legend(title = "Type of song"))

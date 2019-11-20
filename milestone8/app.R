@@ -2,7 +2,8 @@
 # mention below. I will also be adding in more regressions, and comments in the
 # side pannel to clarify things for the viewer. Also, in my .Rmd I am working
 # with scraping genuis lyrics in order to create a word cloud of commonly used
-# words amongst songs to incorporate a second data set. 
+# words amongst songs to incorporate a second data set. I also need to add my
+# about page.
 
 
 library(tidyverse)

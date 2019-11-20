@@ -202,7 +202,7 @@ print(live)
 
 instrumental <- music %>%
   arrange(desc(instrumentalness)) %>%
-  slice(1:5) %>%
+  slice(1:10) %>%
   ggplot(aes(reorder(artist_name,+instrumentalness), instrumentalness)) +
   geom_bar(stat = "identity") +
   coord_flip() +
@@ -386,7 +386,7 @@ chart6 <- music %>%
   geom_boxplot() +
   scale_fill_brewer(palette = "Greens") +
   labs(x = "",
-       y = "Liveliness") +
+       y = "Liveness") +
   theme(legend.position = "none")
 
 print(chart6)

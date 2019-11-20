@@ -5,13 +5,15 @@
 # words amongst songs to incorporate a second data set. I also need to add my
 # about page.
 
-
+library(corrplot)
 library(tidyverse)
 library(ggplot2)
 library(shiny)
 library(shinythemes)
 library(plotly)
 library(scales)
+library(RColorBrewer)
+library(ggthemes)
 
 # Read in data from rds created in prep.R
 

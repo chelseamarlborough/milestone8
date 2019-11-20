@@ -1,3 +1,6 @@
+# Here is where I read in the raw data, cleaned it up, and played around with
+# some graphs I was interested in showing.
+
 library(tidyverse)
 library(ggplot2)
 library(readxl)
@@ -311,11 +314,12 @@ pie %>%
   coord_polar("y", start = 0) +
   scale_fill_brewer(palette = "Greens") +
   theme(
+    axis.ticks = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
-    axis.ticks = element_blank(),
-    panel.grid = element_blank()
-  )
+    panel.grid = element_blank(),
+    
+)
 
 #boxplots of each category
 
@@ -379,7 +383,7 @@ chart5 <- music %>%
 
 print(chart5)
 
-#liveliness
+#liveness
 
 chart6 <- music %>%
   ggplot(aes(type, liveness, fill = type)) +

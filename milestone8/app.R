@@ -1,16 +1,25 @@
+# For the final version, I would like to make some aesthetic changes that I
+# mention below. I will also be adding in more regressions, and comments in the
+# side pannel to clarify things for the viewer. Also, in my .Rmd I am working
+# with scraping genuis lyrics in order to create a word cloud of commonly used
+# words amongst songs to incorporate a second data set. 
 
 
-
+library(tidyverse)
 library(ggplot2)
 library(shiny)
 library(shinythemes)
 library(plotly)
 library(scales)
 
+# Read in data from rds created in prep.R
 
 music <- read_rds("music.rds")
 
 pie <- read_rds("pie.rds")
+
+# Needed to create lists for different calls of reactive graphs. These are
+# options people will be able to choose from when wanting to view a graph.
 
 audio_choices <- c(
   "Danceability" = "danceability",
@@ -23,30 +32,39 @@ audio_choices <- c(
   "Tempo" = "tempo"
 )
 
-chart_features <- c("Danceable" = "danceability",
-                    "Energetic" = "energy",
-                    "Loud" = "loudness",
-                    "Speechy" = "speechiness",
-                    "Acoustic"= "acousticness",
-                    "Live" = "liveness",
-                    "Positive" = "valence",
-                    "Up-Beat" = "tempo",
-                    "Long" = "duration_ms")
+chart_features <- c(
+  "Danceable" = "danceability",
+  "Energetic" = "energy",
+  "Loud" = "loudness",
+  "Speechy" = "speechiness",
+  "Acoustic" = "acousticness",
+  "Live" = "liveness",
+  "Positive" = "valence",
+  "Up-Beat" = "tempo",
+  "Long" = "duration_ms"
+)
 
 ui <- fluidPage(
+  
+  # added a theme to create a dark background.
+  
   theme = shinytheme("slate"),
 
-  br(),
-
+  # navbarPage allows me to create different tabs for people to select and
+  # organize my data better.
+  
   navbarPage(
     "Spotify Top 100 2018 Data",
+    
+    # I first organized the data to present the chart overall. Within each
+    # subpanel, I break down differnet variables of the chart.
+    
     tabPanel(
       "Song Characteristcs",
       tabsetPanel(
         tabPanel(
           "Top 25 Artists of 2018",
           h3("How did Artist Perform on the Spotify Top 100 Chart?"),
-          br(),
           sidebarLayout(
             sidebarPanel(
               h6(
@@ -57,45 +75,68 @@ ui <- fluidPage(
               )
             ),
             mainPanel(
-              plotOutput("top25"),
-              br()
-            ),
-          ),
-          br()
+              
+              # Ideally, I would like to make the background black, the bars
+              # green, and writing white to pop off of the screen. Working on
+              # making this happen for the final version.
+              
+              plotOutput("top25")
+            )
+          )
         ),
         tabPanel(
           "Audio Features",
-          br(),
           sidebarLayout(
-              sidebarPanel(
-                  h6(
-                      "Acousticness is measured on a confidence interval of 0.0 to 1.0. The closer the confidence interval is to 1.0, the more acoustic a song is."
-                  ),
-                  selectInput(
-                      inputId = "most_least",
-                      label = "idk",
-                      choices = c("Most", "Least")
-                  ),
-                  selectInput(
-                      inputId = "chart_features",
-                      label = "What chart do you want to create?",
-                      choices = chart_features
-                  )
-          ), 
-          mainPanel(
-              plotOutput("chart_plot"),
-              br()
-          )
+            sidebarPanel(
+              
+              # I would like to add the Spotify defnitions of each term to match
+              # when the graph pops up but I'm not sure how to do that or if
+              # making a definition page alone would be better.
+              
+              # selectInput allows me to create options for viewers to select. 
+              
+              selectInput(
+                inputId = "most_least",
+                label = "What audio feature would you like to see?",
+                choices = c("Most", "Least")
+              ),
+              selectInput(
+                inputId = "chart_features",
+                label = "",
+                choices = chart_features
+              )
+            ),
+            mainPanel(
+              
+              # I was able to get BPM for tempo, but I am trying to figure out
+              # how to convert the seconds to minutes and seconds for duration.
+              
+              plotOutput("chart_plot")
+            )
           )
         )
       )
     ),
     tabPanel(
+      
+      #This is where I compare rap music to other genres featured on the chart.
+      
       "Rap Music",
       tabsetPanel(
         tabPanel(
           "Overall Distribution",
-          h3("How often did the Rap Genre Appear on the Top 100 Chart?"),
+          h3("How often did rap appear in the Top 100 Chart?"),
+          mainPanel(
+            
+            #Again, I would like to make the background black here and writing
+            #white, along with the rest of the project.
+            
+            plotOutput("piechart")
+          )
+        ),
+        tabPanel(
+          "Audio Features",
+          h3("How did rap audio features compare to other genres?"),
           sidebarLayout(
             sidebarPanel(
               selectInput(
@@ -110,13 +151,56 @@ ui <- fluidPage(
               )
             )
           )
+        ),
+        tabPanel(
+          "Song Duration",
+          h3("How long are rap songs compared to other genres?"),
+          mainPanel(
+            plotOutput(
+              "length"
+            )
+          )
+        )
+      )
+    ),
+    tabPanel(
+      
+      # This is where viewers can explore the correlation between each variable.
+      # I find it interesting to see how they work together.
+      
+      "Correlation",
+      tabsetPanel(
+        tabPanel(
+          "Audio Features Chart",
+          h3("How do audio variables correlate to one another?"),
+          mainPanel(
+            plotOutput("corr")
+          )
+        ),
+        tabPanel(
+          "Feature by Feature",
+          h3("How do individual features correlate to one another?"),
+          mainPanel(
+            
+            # Here is a regression of how loudness correlates to energy. I am
+            # planning on making this an interactive with all of the audio
+            # features, where you can choose the x and y values to show a
+            # regression. I just wanted to show an idea of what I had in mind.
+            
+            plotOutput("loudenergy")
+          )
         )
       )
     )
   )
 )
-# Define server logic required to draw a histogram
+
+# Define server logic required to draw the graphs
+
 server <- function(input, output, session) {
+  
+  # This graph is used for comparing rap to other genres.
+  
   output$rap_plot <- renderPlot({
     ggplot(music, aes(type, get(input$audio_variables), fill = type)) +
       geom_boxplot() +
@@ -127,36 +211,50 @@ server <- function(input, output, session) {
       ) +
       theme(legend.position = "none")
   })
-  
-chart_plot_data <- reactive({
-  req(input$most_least)
-  if (input$most_least == "Most") {
-    chart_plot_data <- music %>%
-      arrange(desc(get(input$chart_features))) %>%
-      slice(1:5)
-  } else {
-    chart_plot_data <- music %>%
-      arrange(get(input$chart_features)) %>%
-      slice(1:5)
-  }
-    return(chart_plot_data)
-})
 
-chart_units <- reactive({
-    if (input$chart_features == "tempo") {
-        chart_units <- "BPM"
-    }
-})
+  # This if statement were needed in order to change th grahp when different
+  # variables were selected.
   
-  output$chart_plot <- renderPlot({
-      ggplot(chart_plot_data(), aes(reorder(artist_name, +get(input$chart_features)), get(input$chart_features))) +
-          geom_bar(stat = "identity") +
-          coord_flip() +
-          labs(x = "Artist - Song",
-               y = "Value") + 
-          scale_y_continuous(labels = unit_format(unit = chart_units()))
+  chart_plot_data <- reactive({
+    req(input$most_least)
+    if (input$most_least == "Most") {
+      chart_plot_data <- music %>%
+        arrange(desc(get(input$chart_features))) %>%
+        slice(1:5)
+    } else {
+      chart_plot_data <- music %>%
+        arrange(get(input$chart_features)) %>%
+        slice(1:5)
+    }
+    return(chart_plot_data)
   })
 
+  # This if statement is to change the x-values to 'BPM' when tempo is selected.
+  
+  chart_units <- reactive({
+    if (input$chart_features == "tempo") {
+      chart_units <- "BPM"
+    }
+  })
+
+  # This graph is to represent different audio values for the whole Top 100 Chart.
+  
+  output$chart_plot <- renderPlot({
+    ggplot(chart_plot_data(), aes(reorder(artist_name, +get(input$chart_features)), get(input$chart_features))) +
+      geom_bar(stat = "identity") +
+      coord_flip() +
+      labs(
+        x = "Artist - Song",
+        y = "Value"
+      ) +
+      
+      # Adding this allows the units to change with the tempo call. 
+      
+      scale_y_continuous(labels = unit_format(unit = chart_units()))
+  })
+
+  # This graph represents the top 25 artist of the chart. 
+  
   output$top25 <- renderPlot({
     music %>%
       group_by(artists) %>%
@@ -174,306 +272,8 @@ chart_units <- reactive({
       )
   })
 
-  output$dance <- renderPlot({
-    music %>%
-      arrange(desc(danceability)) %>%
-      slice(1:10) %>%
-      ggplot(., aes(reorder(artist_name, +danceability), danceability)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Danceable Songs"
-      )
-  })
-
-  output$energy <- renderPlot({
-    music %>%
-      arrange(desc(energy)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +energy), energy)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Energenic Songs"
-      )
-  })
-
-  output$loud <- renderPlot({
-    music %>%
-      arrange(desc(loudness)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +loudness), loudness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Loudest Songs"
-      )
-  })
-
-  output$soft <- renderPlot({
-    music %>%
-      arrange(loudness) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +loudness), loudness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Softest Songs"
-      )
-  })
-
-  output$speech <- renderPlot({
-    music %>%
-      arrange(desc(speechiness)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +speechiness), speechiness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Speech Filled Songs"
-      )
-  })
-
-  output$acoustic <- renderPlot({
-    music %>%
-      arrange(desc(acousticness)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +acousticness), acousticness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Acoustic Songs"
-      )
-  })
-
-  output$live <- renderPlot({
-    music %>%
-      arrange(desc(liveness)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +liveness), liveness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Songs with Audience Presence"
-      )
-  })
-
-  output$instrumental <- renderPlot({
-    music %>%
-      arrange(desc(instrumentalness)) %>%
-      slice(1:5) %>%
-      ggplot(aes(reorder(artist_name, +instrumentalness), instrumentalness)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 5 Most Instrumental Songs"
-      )
-  })
-
-  output$pos <- renderPlot({
-    music %>%
-      arrange(desc(valence)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +valence), valence)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Positive Songs"
-      )
-  })
-
-  output$neg <- renderPlot({
-    music %>%
-      arrange(valence) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +valence), valence)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Value",
-        title = "Top 10 Most Negative Songs"
-      )
-  })
-
-  output$up <- renderPlot({
-    music %>%
-      arrange(desc(tempo)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +tempo), tempo)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Beats per Minute (BPM)",
-        title = "Top 10 Most Upbeat Songs"
-      )
-  })
-
-  output$down <- renderPlot({
-    music %>%
-      arrange(tempo) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +tempo), tempo)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Beats per Minute (BPM)",
-        title = "Top 10 Least Upbeat Songs"
-      )
-  })
-
-  output$long <- renderPlot({
-    music %>%
-      arrange(desc(duration_ms)) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +duration_ms), duration_ms)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Length (minutes)",
-        title = "Top 10 Longest Songs"
-      ) +
-      scale_y_time(
-        labels = function(l)
-          strftime(l, "%M:%S")
-      )
-  })
-
-  output$short <- renderPlot({
-    music %>%
-      arrange(duration_ms) %>%
-      slice(1:10) %>%
-      ggplot(aes(reorder(artist_name, +duration_ms), duration_ms)) +
-      geom_bar(stat = "identity") +
-      coord_flip() +
-      labs(
-        x = "Song",
-        y = "Length (minutes)",
-        title = "Top 10 Shortest Songs"
-      ) +
-      scale_y_time(
-        labels = function(l)
-          strftime(l, "%M:%S")
-      )
-  })
-
-  output$chart1 <- renderPlot({
-    music %>%
-      ggplot(aes(type, danceability, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Danceability"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart2 <- renderPlot({
-    music %>%
-      ggplot(aes(type, energy, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Energy"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart3 <- renderPlot({
-    music %>%
-      ggplot(aes(type, loudness, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Loudness"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart4 <- renderPlot({
-    music %>%
-      ggplot(aes(type, speechiness, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Speechiness"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart5 <- renderPlot({
-    music %>%
-      ggplot(aes(type, acousticness, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Acousticness"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart6 <- renderPlot({
-    music %>%
-      ggplot(aes(type, liveness, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Liveliness"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart7 <- renderPlot({
-    music %>%
-      ggplot(aes(type, valence, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Valence"
-      ) +
-      theme(legend.position = "none")
-  })
-
-  output$chart8 <- renderPlot({
-    music %>%
-      ggplot(aes(type, tempo, fill = type)) +
-      geom_boxplot() +
-      scale_fill_brewer(palette = "Greens") +
-      labs(
-        x = "",
-        y = "Tempo"
-      ) +
-      theme(legend.position = "none")
-  })
-
+  # This graph compares the duration of rap songs to other genres.
+  
   output$length <- renderPlot({
     music %>%
       ggplot(aes((duration_ms / 1000) / 60, fill = type)) +
@@ -487,6 +287,9 @@ chart_units <- reactive({
       guides(fill = guide_legend(title = "Type of Song"))
   })
 
+  # This graph represents the correlation between all of the variables in one
+  # image.
+  
   output$corr <- renderPlot({
     corrplot(
       cor(music[c(3, 4, 6, 8, 9, 10, 11, 12, 13, 14)]),
@@ -502,6 +305,9 @@ chart_units <- reactive({
     )
   })
 
+  # This graph is a pie chart showing how often rap showed up in the chart
+  # compared to other genres.
+  
   output$piechart <- renderPlot({
     pie %>%
       ggplot(aes(x = "", y = Freq, fill = Var1)) +
@@ -512,10 +318,13 @@ chart_units <- reactive({
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         axis.ticks = element_blank(),
-        panel.grid = element_blank()
+        panel.grid = element_blank(),
+        legend.title = element_blank()
       )
   })
 
+  # This graph is a template of how I want my regressions to work.
+  
   output$loudenergy <- renderPlot({
     music %>%
       ggplot(aes(loudness, energy)) +

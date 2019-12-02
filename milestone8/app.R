@@ -183,14 +183,24 @@ ui <- fluidPage(
         tabPanel(
           "Feature by Feature",
           h3("How do individual features correlate to one another?"),
-          mainPanel(
-            
-            # Here is a regression of how loudness correlates to energy. I am
-            # planning on making this an interactive with all of the audio
-            # features, where you can choose the x and y values to show a
-            # regression. I just wanted to show an idea of what I had in mind.
-            
-            plotOutput("loudenergy")
+          sidebarLayout(
+            sidebarPanel(
+              selectInput(
+                inputId = "x_cor",
+                label = "What do you want as your x variable?",
+                choices = audio_choices
+              ),
+              selectInput(
+                inputId = "y_cor",
+                label = "What do you want as your y variable?",
+                choices = audio_choices
+              )
+            ),
+            mainPanel(
+              plotlyOutput(
+                "cor_plot"
+              )
+            )
           )
         )
       )
@@ -328,17 +338,25 @@ server <- function(input, output, session) {
 
   # This graph is a template of how I want my regressions to work.
   
-  output$loudenergy <- renderPlot({
-    music %>%
-      ggplot(aes(loudness, energy)) +
+  output$cor_plot <- renderPlotly({
+    data_to_plot <- music %>% 
+      mutate(correlation = cor(get(input$x_cor), get(input$y_cor)))
+    
+    labels <- paste0("r = ", round(data_to_plot$correlation, 3)) %>%
+      lapply(htmltools::HTML)
+    
+    plot <- music %>%
+      ggplot(aes(get(input$x_cor), get(input$y_cor), text = labels)) +
       geom_point(colour = "black", shape = 21, size = 3, aes(fill = factor(type))) +
       scale_fill_brewer(palette = "Greens") +
       geom_smooth(method = lm) +
-      annotate("text", x = -9.3, y = 0.85, label = "italic(r) == 0.73", parse = T, size = 6, col = "gray20") +
-      labs(x = "Loudness", y = "Energy") +
+      labs(x = names(audio_choices[which(audio_choices == input$x_cor)]), 
+           y = names(audio_choices[which(audio_choices == input$y_cor)])) +
       theme_economist() +
       theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10), legend.position = "right") +
       guides(fill = guide_legend(title = "Type of song"))
+    
+    ggplotly(plot, tooltip = "text")
   })
 }
 

@@ -469,3 +469,4 @@ music %>%
   theme_economist()+
   theme(axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.position = "right")+
   guides(fill = guide_legend(title = "Type of song"))
+

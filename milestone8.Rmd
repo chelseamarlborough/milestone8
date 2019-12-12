@@ -11,6 +11,12 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(genius)
 library(stringr)
+library(wordcloud)
+library(RColorBrewer)
+library(tm)
+library(NLP)
+library(SnowballC)
+
 
 ```
 
@@ -233,23 +239,23 @@ lyrics <- bind_rows(gods_plan, sad, rockstar, psycho, in_my_feelings, better_now
   separate_rows(lyric, sep = "[!-&(-.]") %>% 
   select(lyric)
 
-# 
-# characters <- as.character(lyrics)
-# 
-# cleaned_lyrics <- strsplit(characters, " ")
-# 
-# sort(table(cleaned_lyrics), decreasing = TRUE)
-```
+cloud <- Corpus(VectorSource(lyrics))
+cloud2 <- tm_map(cloud, removePunctuation)
+cloud2 <- tm_map(cloud2, removeWords, stopwords("english"))
+
+a <- TermDocumentMatrix(cloud2)
+b <- as.matrix(a)
+c <- sort(rowSums(b), decreasing = TRUE)
+d <- data.frame(word = names(c), freq = c)
 
 
-```{r}
-
-# lyrics <- as.character(lyrics)
-# 
-# lyrics
-# 
-# cleaned_lyrics <- strsplit(lyrics, " ")[[1]]
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1, max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(8, "Greens"))
 
 
 ```
+
+
+
+
 

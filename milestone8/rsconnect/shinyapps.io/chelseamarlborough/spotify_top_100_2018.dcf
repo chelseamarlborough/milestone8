@@ -5,8 +5,8 @@ account: chelseamarlborough
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1503478
-bundleId: 2605360
+bundleId: 2635908
 url: https://chelseamarlborough.shinyapps.io/spotify_top_100_2018/
-when: 1574290319.36396
+when: 1575379381.4646
 asMultiple: FALSE
 asStatic: FALSE

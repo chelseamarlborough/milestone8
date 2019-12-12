@@ -343,7 +343,9 @@ chart2 <- music %>%
   scale_fill_brewer(palette = "Greens") +
   labs(x = "",
        y = "Energy") +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        plot.background =  element_rect(fill = "black")) +
+  theme_dark()
 
 print(chart2)
 
@@ -468,5 +470,6 @@ music %>%
   labs(x = "Loudness", y = "Energy")+
   theme_economist()+
   theme(axis.text.x = element_text(size=10), axis.text.y = element_text(size=10), legend.position = "right")+
-  guides(fill = guide_legend(title = "Type of song"))
+  guides(fill = guide_legend(title = "Type of song")) +
+  theme_dark()
 

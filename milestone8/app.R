@@ -204,7 +204,36 @@ ui <- fluidPage(
           )
         )
       )
-    )
+    ),
+    tabPanel(
+      "Spotify Definitions",
+      mainPanel(
+        h3("All definitions are curtosey of Spotify for Developers."),
+        h5("Acousticess: A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic."), 
+        h5("Dancebility: Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable."), 
+        h5("Duration: The duration of the track in milliseconds."), 
+        h5("Energy: Energy is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. For example, death metal has high energy, while a Bach prelude scores low on the scale. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy."), 
+        h5("Instrumentalness: Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly “vocal”. The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0."),
+        h5("Liveliness: Detects the presence of an audience in the recording. Higher liveness values represent an increased probability that the track was performed live. A value above 0.8 provides strong likelihood that the track is live."),
+        h5("Loudness: The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typical range between -60 and 0 db."),
+        h5("Speechiness: 	Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks."),
+        h5("Tempo: 	The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration."),
+        h5("Valence: 	A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).")
+      )
+    ),
+    tabPanel(
+      "About",
+      mainPanel(
+        h2("The Data"),
+        h5("These visualizations on data from ", a("Spotify - Top Tracks of 2018", href="https://open.spotify.com/playlist/37i9dQZF1DX1HUbZS4LEyL"), " ."),
+        h5("The cleaned dataset was found on Kaggle.com"),
+        h2("About Me: Chelsea Marlborough"),
+        h5("I am a Harvard undergraduate studying government and data science."),
+        h5("Contact me at chelseamarlborough@college.harvard.edu or connect with me on ", a("LinkedIn", href="https://www.linkedin.com/in/chelseamarlborough/"), " ."),
+        h2("Source Code"),
+        h5("The source code for this Shiny App can be found on my ", a("GitHub", href="https://github.com/chelseamarlborough/spotify-top-100-tracks-2018")," .")
+        
+      ))
   )
 )
 
@@ -222,7 +251,8 @@ server <- function(input, output, session) {
         x = "",
         y = names(audio_choices[which(audio_choices == input$audio_variables)])
       ) +
-      theme(legend.position = "none")
+      theme(legend.position = "none") +
+      theme_dark()
   })
 
   # This if statement were needed in order to change th grahp when different
@@ -282,7 +312,8 @@ server <- function(input, output, session) {
         x = "Artist",
         y = "Number of Songs in Top 100",
         title = "25 Most Popular Artists"
-      )
+      ) +
+      theme_dark()
   })
 
   # This graph compares the duration of rap songs to other genres.
@@ -297,7 +328,8 @@ server <- function(input, output, session) {
         y = ""
       ) +
       scale_x_continuous(limits = c(0, 8), breaks = seq(0, 8, 1)) +
-      guides(fill = guide_legend(title = "Type of Song"))
+      guides(fill = guide_legend(title = "Type of Song")) +
+      theme_dark()
   })
 
   # This graph represents the correlation between all of the variables in one
@@ -333,7 +365,7 @@ server <- function(input, output, session) {
         axis.ticks = element_blank(),
         panel.grid = element_blank(),
         legend.title = element_blank()
-      )
+      ) 
   })
 
   # This graph is a template of how I want my regressions to work.
@@ -354,7 +386,8 @@ server <- function(input, output, session) {
            y = names(audio_choices[which(audio_choices == input$y_cor)])) +
       theme_economist() +
       theme(axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10), legend.position = "right") +
-      guides(fill = guide_legend(title = "Type of song"))
+      guides(fill = guide_legend(title = "Type of song")) +
+      theme_dark()
     
     ggplotly(plot, tooltip = "text")
   })

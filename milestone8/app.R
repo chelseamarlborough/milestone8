@@ -21,6 +21,8 @@ music <- read_rds("music.rds")
 
 pie <- read_rds("pie.rds")
 
+wordz <- read_rds("wordz.rds")
+
 # Needed to create lists for different calls of reactive graphs. These are
 # options people will be able to choose from when wanting to view a graph.
 
@@ -57,7 +59,7 @@ ui <- fluidPage(
   # organize my data better.
   
   navbarPage(
-    "Spotify Top 100 2018 Data",
+    "Spotify - Top Tracks 2018 Data",
     
     # I first organized the data to present the chart overall. Within each
     # subpanel, I break down differnet variables of the chart.
@@ -67,7 +69,7 @@ ui <- fluidPage(
       tabsetPanel(
         tabPanel(
           "Top 25 Artists of 2018",
-          h3("How did Artist Perform on the Spotify Top 100 Chart?"),
+          h3("How did Artist Compete on the Spotify Top Tracks Chart?"),
           sidebarLayout(
             sidebarPanel(
               h6(
@@ -128,7 +130,7 @@ ui <- fluidPage(
       tabsetPanel(
         tabPanel(
           "Overall Distribution",
-          h2("How often did rap appear in the Top 100 Chart?"),
+          h2("How often did rap appear on the Top Tracks Chart?"),
           mainPanel(
             
             #Again, I would like to make the background black here and writing
@@ -206,6 +208,14 @@ ui <- fluidPage(
         )
       )
     ),
+    tabPanel("Common Words",
+             mainPanel(
+               h3("What words were commonly used by artists in the Top Tracks chart?"),
+               plotOutput(
+                 "lyriccloud"
+               ),
+               h6("This visual includes 100 of the most common words used in song lyrics. There are a significant number of references to profanity and derogatory language. I chose to include these because I felt that the representation of the data would be extremely inaccurate with that kind of manipulation.")
+             )),
     tabPanel(
       "Audio Feature Definitions",
       mainPanel(
@@ -219,20 +229,21 @@ ui <- fluidPage(
         h5(strong("Speechiness:"), "Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks."),
         h5(strong("Tempo:"), "The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration."),
         h5(strong("Valence:"),"A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry)."),
-        h6("Definitions are courtesy of ", a("Spotify for Developers", href= "https://developer.spotify.com/documentation/web-api/reference/tracks/get-several-audio-features/"), " .")
+        h6("Definitions are courtesy of ", a("Spotify for Developers", href= "https://developer.spotify.com/documentation/web-api/reference/tracks/get-several-audio-features/"), ".")
       )
     ),
     tabPanel(
       "About",
       mainPanel(
         h2("The Data"),
-        h5("These visualizations on data from ", a("Spotify - Top Tracks of 2018", href="https://open.spotify.com/playlist/37i9dQZF1DX1HUbZS4LEyL"), " ."),
-        h5("The cleaned dataset was found on Kaggle.com"),
+        h5("These visualizations on data from ", a("Spotify - Top Tracks of 2018", href="https://open.spotify.com/playlist/37i9dQZF1DX1HUbZS4LEyL"), "."),
+        h5("The cleaned dataset was found on ", a("Kaggle.com", href="https://www.kaggle.com/"), "."),
+        h5("Lyrics were scrapped and cleaned by me from data found on ", a("Genius.com", href= "https://genius.com/"), "."),
         h2("About Me: Chelsea Marlborough"),
         h5("I am a Harvard undergraduate studying government and data science."),
-        h5("Contact me at chelseamarlborough@college.harvard.edu or connect with me on ", a("LinkedIn", href="https://www.linkedin.com/in/chelseamarlborough/"), " ."),
+        h5("Contact me at chelseamarlborough@college.harvard.edu or connect with me on ", a("LinkedIn", href="https://www.linkedin.com/in/chelseamarlborough/"), "."),
         h2("Source Code"),
-        h5("The source code for this Shiny App can be found on my ", a("GitHub", href="https://github.com/chelseamarlborough/spotify-top-100-tracks-2018")," .")
+        h5("The source code for this Shiny App can be found on my ", a("GitHub", href="https://github.com/chelseamarlborough/spotify-top-100-tracks-2018"),".")
         
       ))
   )
@@ -391,6 +402,14 @@ server <- function(input, output, session) {
       theme_dark()
     
     ggplotly(plot, tooltip = "text")
+  })
+  
+  # This my wordcloud of popular lyrics. 
+  output$lyriccloud <- renderPlot({
+    
+    set.seed(1234)
+    
+    wordcloud(words = wordz$word, freq = wordz$freq, min.freq = 1, max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(8, "PRGn"))
   })
 }
 

@@ -246,11 +246,11 @@ cloud2 <- tm_map(cloud2, removeWords, stopwords("english"))
 a <- TermDocumentMatrix(cloud2)
 b <- as.matrix(a)
 c <- sort(rowSums(b), decreasing = TRUE)
-d <- data.frame(word = names(c), freq = c)
+wordz <- data.frame(word = names(c), freq = c)
 
 
 set.seed(1234)
-wordcloud(words = d$word, freq = d$freq, min.freq = 1, max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(8, "Greens"))
+wordcloud(words = wordz$word, freq = wordz$freq, min.freq = 1, max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(8, "PRGn"))
 
 
 ```

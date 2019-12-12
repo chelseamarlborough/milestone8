@@ -180,7 +180,8 @@ ui <- fluidPage(
           "Audio Features Chart",
           h3("How do audio variables correlate to one another?"),
           mainPanel(
-            plotOutput("corr")
+            plotOutput("corr"),
+            h3("Correlation is a statistically technique technique used to show how strongly variables are related to one another. Correlation is measured on a scale of 0 to 1. The closer the correlation is to one, the strong the relation between variables. The closer to zero, the weaker the relation.")
           )
         ),
         tabPanel(
@@ -202,7 +203,8 @@ ui <- fluidPage(
             mainPanel(
               plotlyOutput(
                 "cor_plot"
-              )
+              ),
+              h3("The blue line represents the regression trend between each variable across the entire chart. Each individual dot specifies a singular song that is color coordinated based on genre, as defined in the legend.")
             )
           )
         )
@@ -214,7 +216,7 @@ ui <- fluidPage(
                plotOutput(
                  "lyriccloud"
                ),
-               h6("This visual includes 100 of the most common words used in song lyrics. There are a significant number of references to profanity and derogatory language. I chose to include these because I felt that the representation of the data would be extremely inaccurate with that kind of manipulation.")
+               h3("This visual includes 100 of the most common words used in song lyrics. There are a significant number of references to profanity and derogatory language. I chose to include these because I felt that the representation of the data would be extremely inaccurate with that kind of manipulation.")
              )),
     tabPanel(
       "Audio Feature Definitions",

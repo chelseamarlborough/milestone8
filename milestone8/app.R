@@ -388,7 +388,9 @@ server <- function(input, output, session) {
     data_to_plot <- music %>% 
       mutate(correlation = cor(get(input$x_cor), get(input$y_cor)))
     
-    labels <- paste0("r = ", round(data_to_plot$correlation, 3)) %>%
+    labels <- paste0("r = ", round(data_to_plot$correlation, 3),
+                     "<br> Song: ", data_to_plot$name,
+                     "<br> Artist: ", data_to_plot$artists) %>%
       lapply(htmltools::HTML)
     
     plot <- music %>%

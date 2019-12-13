@@ -273,6 +273,8 @@ ui <- fluidPage(
                  a("LinkedIn", href = "https://www.linkedin.com/in/chelseamarlborough/"),
                  "."
                ),
+               h2("Project Video"),
+               h5("Here is a ", a("video", href = "https://www.youtube.com/watch?v=6Lv7zbAhnVM&feature=youtu.be")," explanation of my porject."),
                h2("Source Code"),
                h5(
                  "The source code for this Shiny App can be found on my ",

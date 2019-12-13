@@ -17,7 +17,7 @@ library(ggthemes)
 
 # Read in data from rds created in prep.R
 
-music <- read_rds("music.rds")
+music <- read_rds("music.rds") 
 
 pie <- read_rds("pie.rds")
 
@@ -109,7 +109,9 @@ ui <- fluidPage(
                 inputId = "chart_features",
                 label = "",
                 choices = chart_features
-              )
+              ),
+              h6("Tempo (up-beat) is measure in beats per minute (BPM)."),
+              h6("Duration (long) is normally measured in minutes and seconds, but in this case it's measure in milliseconds.")
             ),
             mainPanel(
               
@@ -181,7 +183,7 @@ ui <- fluidPage(
           h3("How do audio variables correlate to one another?"),
           mainPanel(
             plotOutput("corr"),
-            h3("Correlation is a statistically technique technique used to show how strongly variables are related to one another. Correlation is measured on a scale of 0 to 1. The closer the correlation is to one, the strong the relation between variables. The closer to zero, the weaker the relation.")
+            h3("Correlation is a statistical technique used to show how strongly variables are related to one another. Correlation is measured on a scale of 0 to 1. The closer the correlation is to one, the strong the relation between variables. The closer to zero, the weaker the relation.")
           )
         ),
         tabPanel(
@@ -286,13 +288,6 @@ server <- function(input, output, session) {
     return(chart_plot_data)
   })
 
-  # This if statement is to change the x-values to 'BPM' when tempo is selected.
-  
-  chart_units <- reactive({
-    if (input$chart_features == "tempo") {
-      chart_units <- "BPM"
-    }
-  })
 
   # This graph is to represent different audio values for the whole Top 100 Chart.
   
@@ -303,11 +298,10 @@ server <- function(input, output, session) {
       labs(
         x = "Artist - Song",
         y = "Value"
-      ) +
+      )
       
       # Adding this allows the units to change with the tempo call. 
       
-      scale_y_continuous(labels = unit_format(unit = chart_units()))
   })
 
   # This graph represents the top 25 artist of the chart. 
@@ -389,9 +383,10 @@ server <- function(input, output, session) {
       mutate(correlation = cor(get(input$x_cor), get(input$y_cor)))
     
     labels <- paste0("r = ", round(data_to_plot$correlation, 3),
-                     "<br> Song: ", data_to_plot$name,
-                     "<br> Artist: ", data_to_plot$artists) %>%
+                       "<br> Song: ", data_to_plot$name,
+                       "<br> Artist: ", data_to_plot$artists) %>%
       lapply(htmltools::HTML)
+    
     
     plot <- music %>%
       ggplot(aes(get(input$x_cor), get(input$y_cor), text = labels)) +

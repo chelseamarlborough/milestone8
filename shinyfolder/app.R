@@ -132,7 +132,8 @@ ui <- fluidPage(
         tabPanel(
           "Song Duration",
           h3("How long are rap songs compared to other genres?"),
-          mainPanel(plotOutput("length"))
+          mainPanel(plotOutput("length"),
+                    h6("It was interesting to see that non-rap genre songs have a greater density of song length than rap. Rap songs tend to have a wider distribution of length."))
         )
       )),
     tabPanel(# This is where viewers can explore the correlation between each variable.
@@ -265,7 +266,7 @@ ui <- fluidPage(
                ),
                h2("About Me: Chelsea Marlborough"),
                h5(
-                 "I am a Harvard undergraduate studying government and data science."
+                 "I am a Harvard undergraduate studying government and data science. I am a member of the Harvard Women's Lacrosse Team and Marketing Chair for Women of Harvard Athletics."
                ),
                h5(
                  "Contact me at chelseamarlborough@college.harvard.edu or connect with me on ",

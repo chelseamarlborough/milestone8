@@ -14,6 +14,7 @@ library(plotly)
 library(scales)
 library(RColorBrewer)
 library(ggthemes)
+library(wordcloud)
 
 # Read in data from rds created in prep.R
 

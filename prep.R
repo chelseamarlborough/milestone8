@@ -18,6 +18,15 @@ library(wordcloud)
 library(tm)
 library(NLP)
 library(SnowballC)
+library(pdftools)
+library(png)
+library(tinytex)
+library(fs)
+
+# PDF import
+
+file_copy("shinyfolder/mypdf.pdf", "shinyfolder/www")
+
 
 #read in Spotify dataset
 

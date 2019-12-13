@@ -101,7 +101,7 @@ music <- rbind(rap, non_rap)
 
 write_rds(music, path = "milestone8/music.rds")
 
-#song lyrics
+# Song lyric import from .Rmd 
 
 gods_plan <- genius_lyrics("drake", "god's plan")
 
